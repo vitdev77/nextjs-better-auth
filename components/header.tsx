@@ -1,16 +1,22 @@
 'use client';
 
-import Link from 'next/link';
+import * as React from 'react';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
+import { Menu } from 'lucide-react';
+import { Container } from './container';
+import Logo from './logo';
+import { ThemeToggle } from './theme-toggle';
+import { LayoutToggle } from './layout-toggle';
+import { Separator } from './ui/separator';
+import { cn } from '@/lib/utils';
 
-export default function Header() {
+export function Header({ className }: { className?: string }) {
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Check authentication status
     const checkAuth = () => {
       const mockAuthStatus = localStorage.getItem('isAuthenticated') === 'true';
@@ -40,93 +46,125 @@ export default function Header() {
   ];
 
   return (
-    <header className="shadow-sm border-b bg-background sticky top-0 z-50 w-full">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-1">
-            <span className="uppercase font-bold">Better-Auth.</span>{' '}
-            <Badge>Demo</Badge>
-          </Link>
+    <>
+      <header
+        className={cn('bg-background sticky top-0 z-50 w-full', className)}
+      >
+        <Container>
+          <div className="flex items-center justify-between py-3.5 gap-4 w-full">
+            <Logo />
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  pathname === item.href
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+            <div className="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
+              <Separator
+                orientation="vertical"
+                className="data-[orientation=vertical]:h-4 3xl:flex hidden"
+              />
 
-          {/* Auth Status & Actions */}
-          <div className="flex items-center space-x-4">
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
-                <span className="text-sm text-green-600 font-medium">
-                  ✓ Authenticated
-                </span>
-                <button
-                  onClick={handleSignOut}
-                  className="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-3 rounded-md transition-colors duration-200"
-                >
-                  Sign Out
-                </button>
+              <LayoutToggle className="3xl:flex hidden" />
+
+              <Separator
+                orientation="vertical"
+                className="data-[orientation=vertical]:h-4 3xl:flex hidden"
+              />
+
+              <ThemeToggle />
+
+              <div className="flex items-center space-x-2 ml-auto mr-4 md:m-0">
+                {isAuthenticated ? (
+                  <div className="flex items-center space-x-3">
+                    <span className="text-sm text-green-600 font-medium">
+                      ✓ Authenticated
+                    </span>
+                    <Button onClick={handleSignOut}>Sign Out</Button>
+                  </div>
+                ) : (
+                  <>
+                    <Button variant={'outline'} asChild>
+                      <Link href={'/auth'}>Sign In</Link>
+                    </Button>
+                    <Button asChild>
+                      <Link href={'/dashboard'}>Dashboard</Link>
+                    </Button>
+                    <Button
+                      className="md:hidden"
+                      variant={'ghost'}
+                      size={'icon'}
+                    >
+                      <Menu className="size-5" />
+                    </Button>
+                  </>
+                )}
               </div>
-            ) : (
-              <Button variant={'outline'}>Sign In</Button>
-            )}
+            </div>
+          </div>
+        </Container>
+      </header>
+
+      <header className="bg-background sticky top-0 z-50 w-full">
+        <Container>
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <Logo />
+
+            {/* Navigation Links */}
+            <div className="hidden md:flex space-x-4">
+              {navItems.map((item) => (
+                <Button
+                  asChild
+                  variant={pathname === item.href ? 'default' : 'ghost'}
+                  key={item.href}
+                >
+                  <Link href={item.href}>{item.label}</Link>
+                </Button>
+              ))}
+            </div>
+
+            {/* Auth Status & Actions */}
+            <div className="flex items-center space-x-2 ml-auto mr-4 md:m-0">
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-3">
+                  <span className="text-sm text-green-600 font-medium">
+                    ✓ Authenticated
+                  </span>
+                  <Button onClick={handleSignOut}>Sign Out</Button>
+                </div>
+              ) : (
+                <Button variant={'outline'} asChild>
+                  <Link href={'/auth'}>Sign In</Link>
+                </Button>
+              )}
+              <LayoutToggle />
+              <ThemeToggle />
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Button variant={'ghost'} size={'icon'}>
+                <Menu className="size-5" />
+              </Button>
+            </div>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu */}
           <div className="md:hidden">
-            <button
-              type="button"
-              className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
+            <div className="space-y-1 my-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === item.href
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-background text-primary hover:bg-secondary'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-
-        {/* Mobile menu */}
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === item.href
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-    </header>
+        </Container>
+      </header>
+    </>
   );
 }
