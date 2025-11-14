@@ -8,9 +8,12 @@ interface Props {
 
 export default function Logo({ className }: Props) {
   return (
-    <Link href="/" className={cn('flex items-center gap-1', className)}>
+    <Link
+      href="/"
+      className={cn('flex items-center justify-center gap-1', className)}
+    >
       <span className="uppercase text-primary font-bold">Better-Auth.</span>{' '}
-      <Badge>Training</Badge>
+      <Badge>Demo</Badge>
     </Link>
   );
 }
