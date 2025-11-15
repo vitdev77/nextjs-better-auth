@@ -12,7 +12,7 @@ export default function Logo({ className }: Props) {
       href="/"
       className={cn('flex items-center justify-center gap-1', className)}
     >
-      <span className="uppercase text-primary font-bold">Better-Auth.</span>{' '}
+      <span className="text-primary text-xl font-bold">BETTER-AUTH.</span>{' '}
       <Badge>Demo</Badge>
     </Link>
   );

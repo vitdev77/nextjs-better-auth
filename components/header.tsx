@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from './ui/button';
+import { Button, buttonVariants } from './ui/button';
 import { Menu } from 'lucide-react';
 import { Container } from './container';
 import Logo from './logo';
@@ -56,24 +56,18 @@ export function Header({ className }: { className?: string }) {
         <div className="flex flex-col md:flex-row items-center justify-between py-3.5 gap-4 w-full">
           <div className="w-full flex">
             <Logo />
-            <div className="ml-auto md:flex items-center gap-2 md:flex-1 md:justify-end">
-              <div className="flex items-center space-x-2 ml-auto mr-4 md:m-0">
+            <div className="ml-auto sm:flex items-center gap-2 sm:flex-1 sm:justify-end">
+              <div className="flex items-center space-x-2 ml-auto mr-4 sm:m-0">
                 {isAuthenticated ? (
-                  <div className="flex items-center space-x-3">
-                    <Button asChild className="md:flex hidden">
-                      <Link href={'/dashboard'}>Dashboard</Link>
-                    </Button>
-                    <span className="text-sm text-green-600 font-medium">
-                      ✓ Authenticated
-                    </span>
-                    <Button onClick={handleSignOut}>Sign Out</Button>
-                  </div>
+                  <Button onClick={handleSignOut} variant={'destructive'}>
+                    Sign Out
+                  </Button>
                 ) : (
                   <>
                     <Button
                       variant={'outline'}
                       asChild
-                      className="md:flex hidden"
+                      className="sm:flex hidden"
                     >
                       <Link href={'/auth'}>Sign In</Link>
                     </Button>
@@ -92,10 +86,14 @@ export function Header({ className }: { className?: string }) {
               <ThemeToggle />
             </div>
           </div>
-          <div className="flex flex-col gap-2 w-full md:hidden">
+          <div className="grid grid-cols-1 gap-2 w-full sm:hidden">
             {navItems.map((item) => (
               <Button
                 variant={'secondary'}
+                className={cn(
+                  pathname === item.href &&
+                    buttonVariants({ variant: 'default', size: 'lg' })
+                )}
                 size={'lg'}
                 key={item.label}
                 asChild
